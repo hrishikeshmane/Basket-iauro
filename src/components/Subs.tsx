@@ -1,7 +1,22 @@
 import { SubCard } from "./SubCard";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export const Subs = ({ subs, setSubs }) => {
+type Props = {
+  subs: Array<{
+    id: number;
+    name: string;
+    brand: string;
+    quantity: string;
+    mrp: number;
+    productCount: number;
+    schedule: Array<{ day: string; sub: boolean }>;
+    photo: string;
+  }>;
+  setSubs: Function;
+};
+
+export const Subs = ({ subs, setSubs }: Props) => {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center p-3 mt-5 h-fit max-w-lg mx-auto border bg-slate-100 rounded-xl shadow-lg ">

@@ -1,5 +1,15 @@
 import React from "react";
 
+type Props = {
+  name: string;
+  brand: string;
+  quantity: string;
+  mrp: number;
+  productCount: number;
+  schedule: Array<{ day: string; sub: boolean }>;
+  photo: string;
+};
+
 export const SubCard = ({
   name,
   brand,
@@ -8,7 +18,7 @@ export const SubCard = ({
   productCount,
   schedule,
   photo
-}) => {
+}: Props) => {
   return (
     <div className="p-3 my-4 max-w-md mx-auto border bg-white rounded-xl shadow-lg sm:py-2 sm:flex sm:items-center">
       <img

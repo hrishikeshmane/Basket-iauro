@@ -3,56 +3,80 @@ import products from "../products";
 import ProdCard from "./ProdCard";
 import { useNavigate } from "react-router-dom";
 
-export const Products = ({ subs, setSubs }) => {
+type ScheduleType = { day: string; sub: boolean }[];
+
+type ProductType = {
+  id: number;
+  name: string;
+  brand: string;
+  quantity: string;
+  mrp: number;
+  productCount: number;
+  schedule: ScheduleType;
+  photo: string;
+};
+
+type Props = {
+  subs: ProductType[];
+  setSubs: Function;
+};
+
+const defaultSchedule = [
+  { day: "mon", sub: false },
+  { day: "tue", sub: false },
+  { day: "wed", sub: false },
+  { day: "thu", sub: false },
+  { day: "fri", sub: false },
+  { day: "sat", sub: false },
+  { day: "sun", sub: false },
+];
+
+export const Products = ({ subs, setSubs }: Props) => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState("-Select-");
   const [productCount, setProductCount] = useState(0);
-  const [schedule, setSchedule] = useState([
-    { day: "mon", sub: false },
-    { day: "tue", sub: false },
-    { day: "wed", sub: false },
-    { day: "thu", sub: false },
-    { day: "fri", sub: false },
-    { day: "sat", sub: false },
-    { day: "sun", sub: false },
-  ]);
+  const [schedule, setSchedule] = useState(defaultSchedule);
 
   const resetStates = () => {
     setProduct("-Select-");
     setProductCount(0);
-    setSchedule([
-      { day: "mon", sub: false },
-      { day: "tue", sub: false },
-      { day: "wed", sub: false },
-      { day: "thu", sub: false },
-      { day: "fri", sub: false },
-      { day: "sat", sub: false },
-      { day: "sun", sub: false },
-    ]);
+    setSchedule(defaultSchedule);
   };
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductType[]>([]);
 
-  const addProductHandler = (e) => {
+  const addProductHandler: React.ChangeEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    //validation
+    if (productCount === 0 || product === "-Select-") {
+      alert("product selected and/or quantity invalid");
+      return;
+    }
+    if (schedule === defaultSchedule) {
+      alert("please select a schedule");
+      return;
+    }
+
     //get seleted product
-    let productFilter = products.filter((item) => item.name === product);
+    let productFilter = products.filter(item => item.name === product);
     //update selected products list new product with the product count and schedule
-    let newselectedProducts = [
+    let newselectedProducts: ProductType[] = [
       ...selectedProducts,
       { ...productFilter[0], productCount: productCount, schedule: schedule },
     ];
-    setSelectedProducts([...newselectedProducts]);
+    
+    setSelectedProducts(newselectedProducts);
     //reset state
     resetStates();
   };
 
-  const selectHandler = (e) => setProduct(e.target.value);
+  const selectHandler: React.ChangeEventHandler<HTMLSelectElement> = (e) => setProduct(e.currentTarget.value);
 
-  const productCountHandler = (e) => setProductCount(e.target.value);
+  const productCountHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setProductCount(parseInt(e.target.value));
 
-  const daySelectHandler = (day) => {
+  const daySelectHandler = (day: String) => {
     let newDays = schedule.map((item) => {
       if (item.day === day) {
         return { ...item, sub: !item.sub };
@@ -65,7 +89,7 @@ export const Products = ({ subs, setSubs }) => {
 
   const subscriptionHandler = () => {
     //set Subscriptions
-    setSubs(selectedProducts);
+    setSubs([...subs, ...selectedProducts]);
     //reset to empty list
     setSelectedProducts([]);
     //navigate back to "/"
@@ -88,7 +112,6 @@ export const Products = ({ subs, setSubs }) => {
             <option
               key={product.id}
               value={product.name}
-              onClick={() => addProductHandler(product)}
             >
               {product.name}
             </option>
@@ -97,6 +120,7 @@ export const Products = ({ subs, setSubs }) => {
         <input
           className="mx-1 w-1/2 p-1 rounded-sm"
           type="number"
+          min="0"
           placeholder="enter quantity"
           value={productCount}
           onChange={productCountHandler}
@@ -130,7 +154,7 @@ export const Products = ({ subs, setSubs }) => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {
           //selected products list
-          selectedProducts.map((product) => {
+          selectedProducts.map((product: ProductType) => {
             return (
               <ProdCard
                 name={product.name}
@@ -147,9 +171,13 @@ export const Products = ({ subs, setSubs }) => {
         }
       </div>
       <button
-        // disabled
+        className={`px-4 py-1 my-4 text-sm font-semibold rounded-full border ${
+          selectedProducts.length > 0
+            ? "text-purple-600  border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent"
+            : "text-slate-400 border-slate-300"
+        } `}
+        disabled={selectedProducts.length > 0 ? false : true}
         onClick={subscriptionHandler}
-        className="px-4 py-1 my-4 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent"
       >
         Start Subscription
       </button>
