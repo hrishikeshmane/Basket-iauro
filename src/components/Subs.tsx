@@ -3,6 +3,19 @@ import { SubCard } from "./SubCard";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+type ScheduleType = { day: string; sub: boolean }[];
+
+type ProductType = {
+  id: number;
+  name: string;
+  brand: string;
+  quantity: string;
+  mrp: number;
+  productCount: number;
+  schedule: ScheduleType;
+  photo: string;
+};
+
 export const Subs = () => {
   //@ts-ignore
   const subs = useSelector(state => state.subs);
@@ -14,7 +27,7 @@ export const Subs = () => {
       <hr className="w-full m-4" />
       <div>
         {subs.length > 0 ? (
-          subs.map((sub: any) => {
+          subs.map((sub: ProductType) => {
             return (
               <SubCard
                 name={sub.name}
