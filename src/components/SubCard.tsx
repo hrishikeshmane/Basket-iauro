@@ -43,7 +43,7 @@ export const SubCard = ({
                 !day.sub
                   ? "text-purple-600 border-purple-200"
                   : "text-white bg-purple-600 border-transparent"
-              } `}
+              } ${day.day === "mon" || day.day === "wed" ? "px-1" : ""}`}
             >
               {day.day[0].toUpperCase()}
             </button>

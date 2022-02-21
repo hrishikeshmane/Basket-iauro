@@ -1,21 +1,22 @@
+import React from "react";
 import "./App.css";
 import { Subs } from "./components/Subs";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Products } from "./components/Products";
-import { useState } from "react";
-import React from "react";
+import { Provider } from 'react-redux';
+import {store}  from './store';
 
 function App() {
-  const [subs, setSubs] = useState([]);
-
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Subs subs={subs} setSubs={setSubs} />}/>
-          <Route path="/products" element={<Products subs={subs} setSubs={setSubs} />}/>
-        </Routes>
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Subs />}/>
+            <Route path="/products" element={<Products />}/>
+          </Routes>
+        </BrowserRouter>
+      </Provider>
     </div>
   );
 }

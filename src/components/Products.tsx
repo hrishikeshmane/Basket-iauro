@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import products from "../products";
 import ProdCard from "./ProdCard";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 type ScheduleType = { day: string; sub: boolean }[];
 
@@ -16,11 +17,6 @@ type ProductType = {
   photo: string;
 };
 
-type Props = {
-  subs: ProductType[];
-  setSubs: Function;
-};
-
 const defaultSchedule = [
   { day: "mon", sub: false },
   { day: "tue", sub: false },
@@ -31,7 +27,11 @@ const defaultSchedule = [
   { day: "sun", sub: false },
 ];
 
-export const Products = ({ subs, setSubs }: Props) => {
+export const Products = () => {
+  //@ts-ignore
+  const subs = useSelector(state => state.subs);
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const [product, setProduct] = useState("-Select-");
@@ -57,10 +57,14 @@ export const Products = ({ subs, setSubs }: Props) => {
       alert("please select a schedule");
       return;
     }
+    if (selectedProducts.filter(item => item.name === product)) {
+      alert("product already added")
+      return;
+    }
 
     //get seleted product
     let productFilter = products.filter(item => item.name === product);
-    //update selected products list new product with the product count and schedule
+    //update selected products list new  product with the product count and schedule
     let newselectedProducts: ProductType[] = [
       ...selectedProducts,
       { ...productFilter[0], productCount: productCount, schedule: schedule },
@@ -89,7 +93,8 @@ export const Products = ({ subs, setSubs }: Props) => {
 
   const subscriptionHandler = () => {
     //set Subscriptions
-    setSubs([...subs, ...selectedProducts]);
+    dispatch({type:"subsUpdate", payload: [...subs, ...selectedProducts]})
+    // setSubs([...subs, ...selectedProducts]);
     //reset to empty list
     setSelectedProducts([]);
     //navigate back to "/"
@@ -141,7 +146,7 @@ export const Products = ({ subs, setSubs }: Props) => {
                 !day.sub
                   ? "text-purple-600 border-purple-200 hover:text-white hover:bg-purple-300 hover:border-transparent"
                   : "text-white bg-purple-600 border-transparent  hover:text-white hover:border-purple-500 hover:bg-purple-800"
-              } `}
+              } ${day.day === "mon" || day.day === "wed" ? "px-1" : ""}`}
             >
               {day.day[0].toUpperCase()}
             </button>

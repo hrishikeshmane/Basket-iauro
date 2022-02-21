@@ -1,22 +1,12 @@
+import React from "react";
 import { SubCard } from "./SubCard";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import { useSelector } from "react-redux";
 
-type Props = {
-  subs: Array<{
-    id: number;
-    name: string;
-    brand: string;
-    quantity: string;
-    mrp: number;
-    productCount: number;
-    schedule: Array<{ day: string; sub: boolean }>;
-    photo: string;
-  }>;
-  setSubs: Function;
-};
+export const Subs = () => {
+  //@ts-ignore
+  const subs = useSelector(state => state.subs);
 
-export const Subs = ({ subs, setSubs }: Props) => {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center p-3 mt-5 h-fit max-w-lg mx-auto border bg-slate-100 rounded-xl shadow-lg ">
@@ -24,7 +14,7 @@ export const Subs = ({ subs, setSubs }: Props) => {
       <hr className="w-full m-4" />
       <div>
         {subs.length > 0 ? (
-          subs.map((sub) => {
+          subs.map((sub: any) => {
             return (
               <SubCard
                 name={sub.name}
