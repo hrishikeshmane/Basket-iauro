@@ -3,6 +3,7 @@ import { Subs } from "./components/Subs";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Products } from "./components/Products";
 import { useState } from "react";
+import React from "react";
 
 function App() {
   const [subs, setSubs] = useState([]);
